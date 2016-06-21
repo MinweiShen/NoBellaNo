@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"></meta>
+    <title>No Bella No</title>
+    <link rel="stylesheet" type="text/css" href="index.css">
+</head>
+<body>
+<div>
+    <label>Frequency Spectrum</label><br>
+    <canvas id="chart" height='300px' width="1000px"></canvas>
+</div>
+<div>
+    <label>Volume</label>
+    <p id='volume'></p>
+</div>
+<div>
+  <label for="threshold">Threshold</label>
+  <input type="text" id='threshold' value="100">
+</div>
+<div>
+    <input id="audio_file" type="file" accept="audio/*" />
+    <audio id="audio_player"></audio>
+    <button type="button" id='play'>Play</button>
+</div>
+<script type="text/javascript" src='detector.js'></script>
+</body>
+</html>
