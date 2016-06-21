@@ -4,25 +4,52 @@
     <meta charset="utf-8"></meta>
     <title>No Bella No</title>
     <link rel="stylesheet" type="text/css" href="index.css">
+    <link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
 </head>
 <body>
-<div>
-    <label>Frequency Spectrum</label><br>
-    <canvas id="chart" height='300px' width="1000px"></canvas>
+<header>
+    <h1>No Bella No</h1>
+    <span> Bella, you shall not bark at me!</span>
+</header>
+<div class="content">
+    <section class="frequency-spectrum">
+        <h2>Frequency Spectrum<span> Current 256 levels</span></h2>
+        <canvas id="chart" height='300px' width="1000px"></canvas>
+    </section>
+    <section class="volume">
+        <h2>Volume</h2>
+        <p id='volume'></p>
+    </section>
+    <section class="threshold">
+        <h2>Threshold</h2>
+        <table>
+            <tr>
+                <td>
+                    <label for="volume-threshold">Volume</label>
+                </td>
+                <td>
+                    <input type="text" id='volume-threshold' value="100">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="frequency-threshold">Frequency</label>
+                </td>
+                <td>
+                    <input type="text" id='frequency-threshold' value="100">
+                </td>
+            </tr>
+        </table>
+    </section>
+    <section class="handler">
+        <h2>Handler</h2>
+        <input id="audio_file" type="file" accept="audio/*" />
+        <audio id="audio_player"></audio>
+        <button type="button" id='play'>Play</button>
+    </section>
 </div>
-<div>
-    <label>Volume</label>
-    <p id='volume'></p>
-</div>
-<div>
-  <label for="threshold">Threshold</label>
-  <input type="text" id='threshold' value="100">
-</div>
-<div>
-    <input id="audio_file" type="file" accept="audio/*" />
-    <audio id="audio_player"></audio>
-    <button type="button" id='play'>Play</button>
-</div>
+<footer>
+</footer>
 <script type="text/javascript" src='detector.js'></script>
 </body>
 </html>

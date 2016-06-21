@@ -7,9 +7,11 @@
     var audio_file = document.getElementById("audio_file");
     var audio_player = document.getElementById("audio_player");
     var play_btn = document.getElementById("play");
-    var threshold = document.getElementById("threshold");
-    var threshold_value = parseFloat(threshold.value);
-    console.log(threshold_value);
+    var volume_threshold = document.getElementById("volume-threshold");
+    var volume_threshold_value = parseFloat(volume_threshold.value);
+    var frequency_threshold = document.getElementById("frequency-threshold");
+    var frequency_threshold_value = parseFloat(frequency_threshold.value);
+    var frequency_buff;
 
     audio_file.onchange = function(){
         var files = this.files;
@@ -21,11 +23,17 @@
         audio_player.play();
     };
 
-    threshold.onchange = function(){
-        threshold_value = parseFloat(threshold.value);
-        console.log(threshold_value);
+    frequency_threshold.onchange = function(){
+        frequency_threshold_value = parseFloat(frequency_threshold.value);
+        console.log(frequency_threshold_value);
 
-    }
+    };
+
+    volume_threshold.onchange = function(){
+        volume_threshold_value = parseFloat(volume_threshold.value);
+        console.log(volume_threshold_value);
+
+    };
 
     p.then(function(stream){
         source = audioContext.createMediaStreamSource(stream);
@@ -35,18 +43,16 @@
         javascriptNode = audioContext.createScriptProcessor(2048, 1, 0);
         source.connect(analyser);
         analyser.connect(javascriptNode);
+        frequency_buff =  new Uint8Array(analyser.frequencyBinCount);
 
         javascriptNode.onaudioprocess = function() {
             // get the average, bincount is fftsize / 2
-            var arr =  new Uint8Array(analyser.frequencyBinCount);
-            analyser.getByteFrequencyData(arr);
-            ctx.clearRect(0, 0, 1000, 325);
-            // set the fill style
-            drawSpectrum(arr);
-            var average = getAverageVolume(arr);
+            analyser.getByteFrequencyData(frequency_buff);
+            ctx.clearRect(0, 0, 1000, 300);
+            drawSpectrum(frequency_buff);
+            var average = getAverageVolume(frequency_buff);
             volume.innerHTML = average;
-            if(average > threshold_value){
-                console.log(average, threshold_value, 'louder');
+            if(average > volume_threshold_value && audio_player.src && reach_frequency(frequency_threshold_value)){
                 audio_player.play();
             }
         }
@@ -56,6 +62,14 @@
         console.log(err);
     });
 
+    function reach_frequency(f){
+        for(var i=f;i < frequency_buff.length;i++){
+            if(frequency_buff[i] > 0){
+                return true;
+            }
+        }
+        return false;
+    }
     function getAverageVolume(array) {
         var values = 0;
         var average;
@@ -64,7 +78,6 @@
 
         // get all the frequency amplitudes
         for (var i = 0; i < length; i++) {
-            // console.log("array", i , array[i]);
             values += array[i];
         }
         average = values / length;
