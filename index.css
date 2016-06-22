@@ -78,7 +78,25 @@ Content
     margin-bottom: 10px;
 }
 
+
+/* clear fix*/
+.group:before,
+.group:after {
+    content: "";
+    display: table;
+}
+.group:after {
+    clear: both;
+}
+.group {
+    clear: both;
+    *zoom: 1;
+}
+
 /* frequency spectrum*/
+div.frequency-spectrum {
+    float: left;
+}
 .frequency-spectrum span{
     color: darkgray;
     font-size: 15px;
@@ -87,5 +105,10 @@ Content
 
 .frequency-spectrum canvas{
     background: #DCE5E8;
+}
+
+/* camera*/
+div.camera {
+    float: left;
 }
 

@@ -12,9 +12,17 @@
     <span> Bella, you shall not bark at me!</span>
 </header>
 <div class="content">
-    <section class="frequency-spectrum">
-        <h2>Frequency Spectrum<span> Current 256 levels</span></h2>
-        <canvas id="chart" height='300px' width="1000px"></canvas>
+    <section class="visual">
+        <div class="group">
+            <div class="frequency-spectrum">
+                <h2>Frequency Spectrum<span> Current 256 levels</span></h2>
+                <canvas id="chart" height='300px' width="800px"></canvas>
+            </div>
+            <div class="camera">
+                <video width="500px" height="300px" autoplay>
+                </video>
+            </div>
+        </div>
     </section>
     <section class="volume">
         <h2>Volume</h2>
@@ -43,9 +51,9 @@
     </section>
     <section class="handler">
         <h2>Handler</h2>
-        <input id="audio_file" type="file" accept="audio/*" />
+        <label for="audio_file">Select file(s) to play</label>
+        <input id="audio_file" type="file" accept="audio/*" multiple />
         <audio id="audio_player"></audio>
-        <button type="button" id='play'>Play</button>
     </section>
 </div>
 <footer>

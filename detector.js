@@ -1,93 +1,106 @@
+var audioContext = new (window.AudioContext || window.webkitAudioContext)();
+var source, analyser;
+var ctx = document.getElementById("chart").getContext("2d");
+var video = document.getElementsByTagName('video');
+var volume = document.getElementById("volume");
+var addAudio = document.getElementById("audio_file");
+var audioFiles;
+var audioPlayer = document.getElementById("audio_player");
+var volumeThreshold = document.getElementById("volume-threshold");
+var volumeThresholdValue = parseFloat(volumeThreshold.value);
+var frequencyThreshold = document.getElementById("frequency-threshold");
+var frequencyThresholdValue = parseFloat(frequencyThreshold.value);
+var frequencyBuff;
+var isPlaying = false;
+
+function reachFrequency(level){
+    for(var i=level;i < frequency_buff.length;i++){
+        if(frequency_buff[i] > 0){
+            return true;
+        }
+    }
+    return false;
+}
+
+
+function getAverageVolume(array) {
+    var values = 0;
+    var length = array.length;
+    for (var i = 0; i < length; i++) {
+        values += array[i];
+    }
+    return values / length;
+}
+
+function analyze() {
+    analyser.getByteFrequencyData(frequencyBuff);
+    ctx.clearRect(0, 0, 800, 300);
+    for(var i = 0; i < frequencyBuff.length; i++ ){
+        var value = frequencyBuff[i];
+        ctx.fillRect(i*3,300-value,2, value);
+    }
+    var average = getAverageVolume(frequencyBuff);
+    volume.innerHTML = average;
+    if(average > volumeThresholdValue && audioFiles && !isPlaying){
+        var cnt = audioFiles.length;
+        audioPlayer.src = URL.createObjectURL(audioFiles[Math.floor(Math.random()*cnt)]);
+        audioPlayer.loop = false;
+        isPlaying = true;
+        audioPlayer.play();
+    }
+
+    requestAnimationFrame(analyze);
+}
+
+
+function notSupported(err){
+    alert(err);
+}
+
+function handleSuccess(stream){
+    source = audioContext.createMediaStreamSource(stream);
+    analyser = audioContext.createAnalyser();
+    analyser.smoothingTimeConstant = 0.3;
+    analyser.fftSize = 512;
+    source.connect(analyser);
+    frequencyBuff =  new Uint8Array(analyser.frequencyBinCount);
+    analyze();
+
+}
+
 (function () {
-    var audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    var p = navigator.mediaDevices.getUserMedia({"audio":true});
-    var source, analyser, javascriptNode;
-    var ctx = document.getElementById("chart").getContext("2d");
-    var volume = document.getElementById("volume");
-    var audio_file = document.getElementById("audio_file");
-    var audio_player = document.getElementById("audio_player");
-    var play_btn = document.getElementById("play");
-    var volume_threshold = document.getElementById("volume-threshold");
-    var volume_threshold_value = parseFloat(volume_threshold.value);
-    var frequency_threshold = document.getElementById("frequency-threshold");
-    var frequency_threshold_value = parseFloat(frequency_threshold.value);
-    var frequency_buff;
-
-    audio_file.onchange = function(){
-        var files = this.files;
-        var file = URL.createObjectURL(files[0]);
-        audio_player.src = file;
-    };
-
-    play_btn.onclick = function(){
-        audio_player.play();
-    };
-
-    frequency_threshold.onchange = function(){
-        frequency_threshold_value = parseFloat(frequency_threshold.value);
-        console.log(frequency_threshold_value);
-
-    };
-
-    volume_threshold.onchange = function(){
-        volume_threshold_value = parseFloat(volume_threshold.value);
-        console.log(volume_threshold_value);
-
-    };
-
-    p.then(function(stream){
-        source = audioContext.createMediaStreamSource(stream);
-        analyser = audioContext.createAnalyser();
-        analyser.smoothingTimeConstant = 0.3;
-        analyser.fftSize = 512;
-        javascriptNode = audioContext.createScriptProcessor(2048, 1, 0);
-        source.connect(analyser);
-        analyser.connect(javascriptNode);
-        frequency_buff =  new Uint8Array(analyser.frequencyBinCount);
-
-        javascriptNode.onaudioprocess = function() {
-            // get the average, bincount is fftsize / 2
-            analyser.getByteFrequencyData(frequency_buff);
-            ctx.clearRect(0, 0, 1000, 300);
-            drawSpectrum(frequency_buff);
-            var average = getAverageVolume(frequency_buff);
-            volume.innerHTML = average;
-            if(average > volume_threshold_value && audio_player.src && reach_frequency(frequency_threshold_value)){
-                audio_player.play();
-            }
-        }
-    });
-
-    p.catch(function(err){
-        console.log(err);
-    });
-
-    function reach_frequency(f){
-        for(var i=f;i < frequency_buff.length;i++){
-            if(frequency_buff[i] > 0){
-                return true;
-            }
-        }
-        return false;
+    if('getUserMedia' in navigator.mediaDevices){
+        var p = navigator.mediaDevices.getUserMedia({
+            "audio": true,
+            "video": true,
+        });
+        p.then(handleSuccess).catch(notSupported);
     }
-    function getAverageVolume(array) {
-        var values = 0;
-        var average;
-
-        var length = array.length;
-
-        // get all the frequency amplitudes
-        for (var i = 0; i < length; i++) {
-            values += array[i];
-        }
-        average = values / length;
-        return average;
+    else{
+        navigator.getUserMedia =
+            navigator.getUserMedia ||
+            navigator.webkitGetUserMedia ||
+            navigator.mozGetUserMedia;
+        navigator.getUserMedia({
+            "audio": false,
+            "video": true
+        }, handleSuccess, notSupported);
     }
+    addAudio.onchange = function(){
+        audioFiles = this.files;
+    };
 
-    function drawSpectrum(array) {
-        for(var i = 0; i < (array.length); i++ ){
-            var value = array[i];
-            ctx.fillRect(i*3,300-value,2, value);
-        }
-    }
+    audioPlayer.onended = function(){
+      isPlaying = false;
+    };
+
+    frequencyThreshold.onchange = function(){
+        frequencyThresholdValue = parseFloat(frequencyThreshold.value);
+    };
+
+    volumeThreshold.onchange = function(){
+        volumeThresholdValue = parseFloat(volumeThreshold.value);
+    };
+
+
 })();
