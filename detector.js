@@ -7,7 +7,7 @@ gradient1.addColorStop(1,"green");
 ctx.fillStyle = gradient1;
 
 var ctxVolume = document.querySelector("#volume-meter").getContext("2d");
-var gradient2 = ctx_volume.createLinearGradient(0,0,800,0);
+var gradient2 = ctxVolume.createLinearGradient(0,0,800,0);
 gradient2.addColorStop(0,"green");
 gradient2.addColorStop(1,"white");
 ctxVolume.fillStyle = gradient2;
