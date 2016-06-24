@@ -1,21 +1,33 @@
 var audioContext = new (window.AudioContext || window.webkitAudioContext)();
-var source, analyser;
-var ctx = document.getElementById("chart").getContext("2d");
-var video = document.getElementsByTagName('video');
-var volume = document.getElementById("volume");
-var addAudio = document.getElementById("audio_file");
-var audioFiles;
-var audioPlayer = document.getElementById("audio_player");
-var volumeThreshold = document.getElementById("volume-threshold");
+
+var ctx = document.querySelector("#chart").getContext("2d");
+var gradient1 = ctx.createLinearGradient(0,0,0,300);
+gradient1.addColorStop(0,"white");
+gradient1.addColorStop(1,"green");
+ctx.fillStyle = gradient1;
+
+var ctxVolume = document.querySelector("#volume-meter").getContext("2d");
+var gradient2 = ctx_volume.createLinearGradient(0,0,800,0);
+gradient2.addColorStop(0,"green");
+gradient2.addColorStop(1,"white");
+ctxVolume.fillStyle = gradient2;
+
+var video = document.querySelector('video');
+var addAudio = document.querySelector("#audio_file");
+var audioPlayer = document.querySelector("#audio_player");
+var volumeThreshold = document.querySelector("#volume-threshold");
 var volumeThresholdValue = parseFloat(volumeThreshold.value);
-var frequencyThreshold = document.getElementById("frequency-threshold");
+var volumeValue = document.querySelector("#volume-value");
+var frequencyThreshold = document.querySelector("#frequency-threshold");
 var frequencyThresholdValue = parseFloat(frequencyThreshold.value);
-var frequencyBuff;
+var frequencyBuff, analyser;
 var isPlaying = false;
+var audioFiles;
+
 
 function reachFrequency(level){
-    for(var i=level;i < frequency_buff.length;i++){
-        if(frequency_buff[i] > 0){
+    for(var i=level;i < frequencyBuff.length;i++){
+        if(frequencyBuff[i] > 0){
             return true;
         }
     }
@@ -29,27 +41,37 @@ function getAverageVolume(array) {
     for (var i = 0; i < length; i++) {
         values += array[i];
     }
-    return values / length;
+    return Math.round(values / length);
+}
+
+function reachThreshold(average, level){
+    return average > volumeThresholdValue && audioFiles && !isPlaying && reachFrequency(level)
 }
 
 function analyze() {
     analyser.getByteFrequencyData(frequencyBuff);
+
+    // visual canvas
     ctx.clearRect(0, 0, 800, 300);
     for(var i = 0; i < frequencyBuff.length; i++ ){
         var value = frequencyBuff[i];
         ctx.fillRect(i*3,300-value,2, value);
     }
     var average = getAverageVolume(frequencyBuff);
-    volume.innerHTML = average;
-    if(average > volumeThresholdValue && audioFiles && !isPlaying){
+    volumeValue.innerHTML = average;
+    ctxVolume.clearRect(0, 0, 800, 30);
+    ctxVolume.fillRect(0, 0, 4*average, 30);
+
+    // see if need to trigger handler
+    if(reachThreshold(average, frequencyThresholdValue)){
         var cnt = audioFiles.length;
-        audioPlayer.src = URL.createObjectURL(audioFiles[Math.floor(Math.random()*cnt)]);
+        var vendorURL = window.URL || window.webkitURL;
+        audioPlayer.src = vendorURL.createObjectURL(audioFiles[Math.floor(Math.random()*cnt)]);
         audioPlayer.loop = false;
         isPlaying = true;
         audioPlayer.play();
     }
-
-    requestAnimationFrame(analyze);
+    // requestAnimationFrame(analyze);
 }
 
 
@@ -58,17 +80,21 @@ function notSupported(err){
 }
 
 function handleSuccess(stream){
-    source = audioContext.createMediaStreamSource(stream);
+    var source = audioContext.createMediaStreamSource(stream);
     analyser = audioContext.createAnalyser();
     analyser.smoothingTimeConstant = 0.3;
     analyser.fftSize = 512;
     source.connect(analyser);
+    // not using requestAnimationFrame because that's too fast
+    var jsnode = audioContext.createScriptProcessor(2048);
+    jsnode.onaudioprocess = analyze;
+    analyser.connect(jsnode);
     frequencyBuff =  new Uint8Array(analyser.frequencyBinCount);
-    analyze();
+    video.srcObject = stream;
 
 }
 
-(function () {
+window.onload = function () {
     if('getUserMedia' in navigator.mediaDevices){
         var p = navigator.mediaDevices.getUserMedia({
             "audio": true,
@@ -101,6 +127,4 @@ function handleSuccess(stream){
     volumeThreshold.onchange = function(){
         volumeThresholdValue = parseFloat(volumeThreshold.value);
     };
-
-
-})();
+};
