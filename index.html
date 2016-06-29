@@ -14,11 +14,11 @@
 <div class="content">
     <section class="visual">
         <div class="group">
-            <div class="frequency-spectrum">
+            <div class="frequency-spectrum column">
                 <h2>Frequency Spectrum<span> Current 256 levels</span></h2>
                 <canvas id="chart" height='300px' width="800px"></canvas>
             </div>
-            <div class="camera">
+            <div class="camera column">
                 <h2> Live Stream</h2>
                 <video width="500px" height="300px" autoplay muted>
                 </video>
@@ -26,9 +26,17 @@
         </div>
     </section>
     <section class="volume">
-        <h2>Volume</h2>
-        <canvas height="30px", width="800px" id="volume-meter"></canvas>
-        <p id="volume-value"></p>
+       <div class="group">
+           <div class="column">
+               <h2>Volume</h2>
+               <canvas height="30px", width="800px" id="volume-meter"></canvas>
+               <p id="volume-value"></p>
+           </div>
+           <div class="column">
+               <canvas id="hidden-stage"></canvas>
+               <img id="screenshot">
+           </div>
+       </div>
     </section>
     <section class="threshold">
         <h2>Threshold</h2>

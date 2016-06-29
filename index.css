@@ -93,10 +93,12 @@ Content
     *zoom: 1;
 }
 
-/* frequency spectrum*/
-div.frequency-spectrum {
+.column{
     float: left;
 }
+
+/* frequency spectrum*/
+
 .frequency-spectrum span{
     color: darkgray;
     font-size: 15px;
@@ -108,11 +110,25 @@ div.frequency-spectrum {
 }
 
 /* camera*/
-div.camera {
-    float: left;
-}
 
 .camera h2{
     margin-left: 20px;
+}
+
+
+#hidden-stage{
+    display: none;
+    width: 400px;
+    height: 300px;
+}
+
+#screenshot {
+    width: 400px;
+    height: 300px;
+}
+
+video {
+    width: 400px;
+    height: 300px;
 }
 
