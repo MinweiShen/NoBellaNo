@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8"></meta>
+    <meta charset="utf-8">
     <title>No Bella No</title>
     <link rel="stylesheet" type="text/css" href="index.css">
     <link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
@@ -15,7 +15,7 @@
     <section class="visual">
         <div class="group">
             <div class="frequency-spectrum column">
-                <h2>Frequency Spectrum<span> Current 256 levels</span></h2>
+                <h2>Frequency Spectrum<span> Currently 256 levels</span></h2>
                 <canvas id="chart" height='300px' width="800px"></canvas>
             </div>
             <div class="camera column">
@@ -61,13 +61,14 @@
     </section>
     <section class="handler">
         <h2>Handler</h2>
-        <label for="audio_file">Select file(s) to play</label>
-        <input id="audio_file" type="file" accept="audio/*" multiple />
-        <audio id="audio_player"></audio>
+        <label for="audio-file">Select file(s) to play</label>
+        <input id="audio-file" type="file" accept="audio/*" multiple />
+        <audio id="audio-player"></audio>
     </section>
 </div>
 <footer>
 </footer>
-<script type="text/javascript" src='detector.js'></script>
+<script type="text/javascript" src='volume_detector.js'></script>
+<script type="text/javascript" src='main.js'></script>
 </body>
 </html>
