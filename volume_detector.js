@@ -23,7 +23,7 @@ VolumeDetector.prototype.updateFrequencyThreshold = function(v){
 
 VolumeDetector.prototype._reachFrequency = function(){
     for(let i=this.frequencyThreshold;i < this.frequencyBuff.length;i++){
-        if(frequencyBuff[i] > 0){
+        if(this.frequencyBuff[i] > 0){
             return true;
         }
     }

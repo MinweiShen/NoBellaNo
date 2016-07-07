@@ -1,14 +1,18 @@
+'use strict';
+
 var audioContext = new (window.AudioContext || window.webkitAudioContext)();
-var volumeDetector = new VolumeDetector();
+var ctx, ctxVolume, ctxStage;
 var video = document.querySelector('video');
 var addAudio = document.querySelector("#audio-file");
 var audioPlayer = document.querySelector("#audio-player");
 var volumeThreshold = document.querySelector("#volume-threshold");
 var volumeValue = document.querySelector("#volume-value");
 var frequencyThreshold = document.querySelector("#frequency-threshold");
+var img = document.querySelector("#screenshot");
+var hiddenStage = document.querySelector("#hidden-stage");
 var analyser;
 var audioFiles;
-var ctx, ctxVolume;
+var volumeDetector, motionDetector;
 
 function initContext(){
     ctx = document.querySelector("#chart").getContext("2d");
@@ -22,7 +26,10 @@ function initContext(){
     gradient2.addColorStop(0,"green");
     gradient2.addColorStop(1,"white");
     ctxVolume.fillStyle = gradient2;
+
+    ctxStage = document.querySelector("#hidden-stage").getContext("2d");
 }
+
 
 function drawFrequencySpectrum(ctx, buff){
     ctx.clearRect(0, 0, 800, 300);
@@ -56,6 +63,9 @@ function analyze() {
         volumeDetector.isPlaying = true;
         audioPlayer.play();
     }
+
+
+    motionDetector.capture();
 }
 
 
@@ -64,6 +74,8 @@ function notSupported(err){
 }
 
 function handleSuccess(stream){
+    volumeDetector = new VolumeDetector();
+    motionDetector = new MotionDetector(hiddenStage, video, img);
     let source = audioContext.createMediaStreamSource(stream);
     analyser = audioContext.createAnalyser();
     analyser.smoothingTimeConstant = 0.3;
@@ -75,6 +87,7 @@ function handleSuccess(stream){
     volumeDetector.frequencyBuff =  new Uint8Array(analyser.frequencyBinCount);
     video.srcObject = stream;
 
+
 }
 
 window.onload = function () {
@@ -83,7 +96,7 @@ window.onload = function () {
     if('getUserMedia' in navigator.mediaDevices){
         let p = navigator.mediaDevices.getUserMedia({
             "audio": true,
-            "video": true,
+            "video": {width:400, height:300},
         });
         p.then(handleSuccess).catch(notSupported);
     }
@@ -115,3 +128,4 @@ window.onload = function () {
         volumeDetector.updateVolumeThreshold(parseFloat(volumeThreshold.value));
     };
 };
+

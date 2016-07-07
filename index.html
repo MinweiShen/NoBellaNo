@@ -20,55 +20,58 @@
             </div>
             <div class="camera column">
                 <h2> Live Stream</h2>
-                <video width="500px" height="300px" autoplay muted>
+                <video width="400px" height="300px" autoplay muted>
                 </video>
             </div>
         </div>
     </section>
-    <section class="volume">
+    <section>
        <div class="group">
            <div class="column">
-               <h2>Volume</h2>
-               <canvas height="30px", width="800px" id="volume-meter"></canvas>
-               <p id="volume-value"></p>
+               <div class="subsection">
+                   <h2>Volume</h2>
+                   <canvas height="30px", width="800px" id="volume-meter"></canvas>
+                   <p id="volume-value"></p>
+               </div>
+               <div class="subsection">
+                   <h2>Threshold</h2>
+                   <table>
+                       <tr>
+                           <td>
+                               <label for="volume-threshold">Volume</label>
+                           </td>
+                           <td>
+                               <input type="text" id='volume-threshold' value="100">
+                           </td>
+                       </tr>
+                       <tr>
+                           <td>
+                               <label for="frequency-threshold">Frequency (0-255)</label>
+                           </td>
+                           <td>
+                               <input type="text" id='frequency-threshold' value="100" placeholder="0-255">
+                           </td>
+                       </tr>
+                   </table>
+               </div>
+              <div class="subsection">
+                  <h2>Handler</h2>
+                  <label for="audio-file">Select file(s) to play</label>
+                  <input id="audio-file" type="file" accept="audio/*" multiple />
+                  <audio id="audio-player"></audio>
+              </div>
            </div>
            <div class="column">
-               <canvas id="hidden-stage"></canvas>
+               <canvas id="hidden-stage" height="300px" width="400px"></canvas>
                <img id="screenshot">
            </div>
        </div>
-    </section>
-    <section class="threshold">
-        <h2>Threshold</h2>
-        <table>
-            <tr>
-                <td>
-                    <label for="volume-threshold">Volume</label>
-                </td>
-                <td>
-                    <input type="text" id='volume-threshold' value="100">
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="frequency-threshold">Frequency (0-255)</label>
-                </td>
-                <td>
-                    <input type="text" id='frequency-threshold' value="100" placeholder="0-255">
-                </td>
-            </tr>
-        </table>
-    </section>
-    <section class="handler">
-        <h2>Handler</h2>
-        <label for="audio-file">Select file(s) to play</label>
-        <input id="audio-file" type="file" accept="audio/*" multiple />
-        <audio id="audio-player"></audio>
     </section>
 </div>
 <footer>
 </footer>
 <script type="text/javascript" src='volume_detector.js'></script>
+<script type="text/javascript" src='motion_detector.js'></script>
 <script type="text/javascript" src='main.js'></script>
 </body>
 </html>

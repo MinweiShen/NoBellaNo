@@ -95,6 +95,11 @@ Content
 
 .column{
     float: left;
+    margin-right: 20px;
+}
+
+.subsection {
+    margin-top: 20px;
 }
 
 /* frequency spectrum*/
@@ -115,19 +120,11 @@ Content
     margin-left: 20px;
 }
 
-
 #hidden-stage{
     display: none;
-    width: 400px;
-    height: 300px;
 }
 
 #screenshot {
-    width: 400px;
-    height: 300px;
-}
-
-video {
     width: 400px;
     height: 300px;
 }
