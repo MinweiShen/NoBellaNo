@@ -1,9 +1,9 @@
 'use strict';
 
-function VolumeDetector(){
+function VolumeDetector(f, v){
     this.isPlaying = false;
-    this.volumeThreshold = null;
-    this.frequencyThreshold = null;
+    this.volumeThreshold = v;
+    this.frequencyThreshold = f;
     this.frequencyBuff = null;
 }
 

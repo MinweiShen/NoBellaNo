@@ -55,7 +55,7 @@ function analyze() {
     volumeDetector.updateAverageVolume();
     drawVolume(ctxVolume, volumeDetector.averageVolume);
 
-    if(volumeDetector.reachThreshold() && audioFiles){
+    if(volumeDetector.reachThreshold() && audioFiles && !volumeDetector.isPlaying){
         let cnt = audioFiles.length;
         let vendorURL = window.URL || window.webkitURL;
         audioPlayer.src = vendorURL.createObjectURL(audioFiles[Math.floor(Math.random()*cnt)]);
@@ -74,7 +74,7 @@ function notSupported(err){
 }
 
 function handleSuccess(stream){
-    volumeDetector = new VolumeDetector();
+    volumeDetector = new VolumeDetector(parseFloat(frequencyThreshold.value),parseFloat(volumeThreshold.value));
     motionDetector = new MotionDetector(hiddenStage, video, img);
     let source = audioContext.createMediaStreamSource(stream);
     analyser = audioContext.createAnalyser();
